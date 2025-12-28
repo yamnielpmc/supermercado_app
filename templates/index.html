@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selectos - Sistema de Cajas</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Supermercados Selectos</h1>
+        <h3 id="desc">Morovis</h3>
+    </header>
+
+    <main>
+    <section id="productos">
+        <h2>Productos</h2>
+
+        <!-- Barra de pestañas -->
+        <div id="tabs">
+            {% set categorias = productos | map(attribute='categoria') | unique %}
+            {% for cat in categorias %}
+                <button class="tab" data-categoria="{{ cat }}">{{ cat }}</button>
+            {% endfor %}
+        </div>
+
+        <!-- Contenedor de productos -->
+        <div id="productos-grid" class="grid">
+            {% for producto in productos %}
+                <button class="producto" 
+                        data-id="{{ producto.id }}" 
+                        data-nombre="{{ producto.nombre }}" 
+                        data-precio="{{ producto.precio }}" 
+                        data-categoria="{{ producto.categoria }}">
+                    {{ producto.nombre }} <br>
+                    ${{ "%.2f"|format(producto.precio) }}
+                </button>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="carrito">
+        <h2>Carrito</h2>
+        <ul id="lista-carrito"></ul>
+        <div class="totales">
+            <p>Subtotal: $<span id="subtotal">0.00</span></p>
+            <p>Impuesto (10%): $<span id="impuesto">0.00</span></p>
+            <p><strong>Total: $<span id="total">0.00</span></strong></p>
+        </div>
+        <button id="procesar">Procesar Compra</button>
+    </section>
+</main>
+
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
