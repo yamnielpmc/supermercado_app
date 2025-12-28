@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-
+    <!--Encabezado del Selectos-->
     <header>
         <h1>Supermercados Selectos</h1>
         <h3 id="desc">Morovis</h3>
     </header>
-
+    <!--Contenido principal-->
     <main>
     <section id="productos">
         <h2>Productos</h2>
@@ -39,7 +39,7 @@
             {% endfor %}
         </div>
     </section>
-
+    <!-- Sección del carrito -->
     <section id="carrito">
         <h2>Carrito</h2>
         <ul id="lista-carrito"></ul>
@@ -50,6 +50,7 @@
         </div>
         <button id="procesar">Procesar Compra</button>
     </section>
+    <button id="void-total" class="peligro">VOID TOTAL</button>
 </main>
 
 

@@ -122,3 +122,31 @@ main {
 #tabs::-webkit-scrollbar-track {
     background: #ffd9a7;
 }
+
+.eliminar {
+    margin-left: 10px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 2px 6px;
+}
+
+.eliminar:hover {
+    background-color: #c1121f;
+}
+
+#void-total {
+    padding: 1rem;
+    background-color: #7c000a;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#void-total:hover {
+    background-color: rgb(49, 2, 6);
+}

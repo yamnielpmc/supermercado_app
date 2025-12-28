@@ -28,23 +28,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Actualizar la lista del carrito y totales
     function actualizarCarrito() {
-        listaCarrito.innerHTML = "";
-        let subtotal = 0;
+    listaCarrito.innerHTML = "";
+    let subtotal = 0;
 
-        carrito.forEach(item => {
-            const li = document.createElement("li");
-            li.textContent = `${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`;
-            listaCarrito.appendChild(li);
-            subtotal += item.precio * item.cantidad;
+    carrito.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`;
+
+        // Crear botón "Void"
+        const voidBtn = document.createElement("button");
+        voidBtn.textContent = "VOID";
+        voidBtn.classList.add("eliminar");
+        voidBtn.addEventListener("click", () => {
+            eliminarDelCarrito(item.nombre);
         });
 
-        const impuesto = subtotal * impuestoRate;
-        const total = subtotal + impuesto;
+        li.appendChild(voidBtn);
+        listaCarrito.appendChild(li);
 
-        subtotalEl.textContent = subtotal.toFixed(2);
-        impuestoEl.textContent = impuesto.toFixed(2);
-        totalEl.textContent = total.toFixed(2);
+        subtotal += item.precio * item.cantidad;
+    });
+
+    const impuesto = subtotal * impuestoRate;
+    const total = subtotal + impuesto;
+
+    subtotalEl.textContent = subtotal.toFixed(2);
+    impuestoEl.textContent = impuesto.toFixed(2);
+    totalEl.textContent = total.toFixed(2);
+}
+
+
+    // Eliminar producto del carrito
+    function eliminarDelCarrito(nombre) {
+    const index = carrito.findIndex(p => p.nombre === nombre);
+    if (index !== -1) {
+        carrito.splice(index, 1);
+        actualizarCarrito();
     }
+}
+
+    // Botón "VOID TOTAL"
+    const voidTotalBtn = document.getElementById("void-total");
+    voidTotalBtn.addEventListener("click", () => {
+    if (carrito.length === 0) {
+        alert("El carrito ya está vacío.");
+        return;
+    }
+        const confirmar = confirm("¿Estás seguro de que deseas vaciar el carrito?");
+        if (confirmar){
+            carrito.length = 0;
+            actualizarCarrito();
+            alert("El carrito ha sido vaciado.");
+        } else {
+            alert("Operacion Cancelada.");
+        }
+    });
+
 
     // Procesar compra
     procesarBtn.addEventListener("click", async () => {
