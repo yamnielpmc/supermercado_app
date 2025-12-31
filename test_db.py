@@ -18,4 +18,4 @@ cursor.execute(
 conn.commit()
 conn.close()
 
-print("✅ Venta insertada correctamente en la base de datos.")
+print("Venta insertada correctamente en la base de datos.")

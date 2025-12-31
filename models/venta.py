@@ -1,19 +1,29 @@
-import sqlite3, os
-from .db import get_connection
+import sqlite3
+import json
+
+DB_PATH = "database/supermercado.db"
+
+def get_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row  # Para acceder a columnas por nombre
+    return conn
+
+def obtener_historial():
+    conn = get_connection()  # ✅ Crear la conexión aquí
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM ventas ORDER BY fecha DESC")
+    ventas = cursor.fetchall()
+    conn.close()
+    return ventas
 
 def registrar_venta(detalles, total):
-    conn = get_connection()
+    conn = get_connection()  # ✅ Crear la conexión aquí
     cursor = conn.cursor()
-
-    from datetime import datetime
-    fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    import json
-    detalles_json = json.dumps(detalles)  # convierte lista de dict a string JSON
-
-    # Usar placeholders ? para seguridad y evitar errores de sintaxis
+    # Guardar detalles como JSON
+    detalles_json = json.dumps(detalles)
     cursor.execute(
-        "INSERT INTO ventas (fecha, total, detalles) VALUES (?, ?, ?)",
-        (fecha, total, detalles_json)
+        "INSERT INTO ventas (detalles, total, fecha) VALUES (?, ?, datetime('now'))",
+        (detalles_json, total)
     )
     conn.commit()
     conn.close()

@@ -11,26 +11,29 @@ document.addEventListener("DOMContentLoaded", () => {
     // Agregar producto al carrito
     document.querySelectorAll(".producto").forEach(btn => {
         btn.addEventListener("click", () => {
+            // Obtener datos del producto desde la base de datos
             const id = btn.dataset.id;
             const nombre = btn.dataset.nombre;
             const precio = parseFloat(btn.dataset.precio);
 
+            // Verificar si el producto ya está en el carrito
             const existente = carrito.find(p => p.id === id);
             if (existente) {
                 existente.cantidad++;
             } else {
                 carrito.push({ id, nombre, precio, cantidad: 1 });
             }
-
             actualizarCarrito();
         });
     });
 
     // Actualizar la lista del carrito y totales
     function actualizarCarrito() {
+    // Limpiar la lista actual
     listaCarrito.innerHTML = "";
     let subtotal = 0;
 
+    // Mostrar cada producto en el carrito
     carrito.forEach(item => {
         const li = document.createElement("li");
         li.textContent = `${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`;
@@ -43,12 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
             eliminarDelCarrito(item.nombre);
         });
 
+        // Agregar botón al elemento de la lista
         li.appendChild(voidBtn);
         listaCarrito.appendChild(li);
 
         subtotal += item.precio * item.cantidad;
     });
 
+    // Calcular totales
     const impuesto = subtotal * impuestoRate;
     const total = subtotal + impuesto;
 
@@ -92,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Preparar datos de la venta
         const venta = {
             detalles: carrito,
             total: parseFloat(totalEl.textContent)
@@ -99,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Procesando venta:", venta);
 
+        // Enviar datos al servidor Flask
         try {
             const res = await fetch("/procesar_venta", {
                 method: "POST",
@@ -106,8 +113,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify(venta)
             });
 
+            // Obtener respuesta del servidor
             const data = await res.json();
 
+            // Manejar la respuesta
             if (res.ok) {
                 alert("Compra procesada correctamente!");
                 carrito.length = 0;

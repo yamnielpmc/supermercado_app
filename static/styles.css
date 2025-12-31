@@ -13,6 +13,27 @@ header {
     padding: 1rem;
 }
 
+#title {
+    text-align: center;
+    color: #c21313;
+    margin-top: 0.5rem;
+}
+
+#headerBtn {
+    top: 20px;
+    right: 20px;
+    background-color: #ff0000;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+header #headerBtn:hover {
+    background-color: #f46161;
+}
+
 #banner {
     width: 100%;
     height: 100px;
@@ -38,6 +59,39 @@ main {
     border-radius: 12px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.1);
     width: 45%;
+}
+
+#historial {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    width: 90%;
+    margin: 1rem auto;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.separate {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #ff0000;
+    color: white;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.separate:hover {
+    background-color: #f46161;
+}
+
+.separate ul {
+    padding-left: 20px;
+    margin-top: 20px;
 }
 
 .grid {
@@ -72,6 +126,20 @@ main {
 
 .totales {
     margin-top: 1rem;
+}
+
+li strong {
+    font-weight: bold;
+}
+
+.producto{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    color: white;
+    font-weight: bold;
 }
 
 #procesar {
@@ -160,4 +228,8 @@ main {
 
 #void-total:hover {
     background-color: rgb(49, 2, 6);
+}
+
+.historial-container {
+    padding: 2rem;
 }

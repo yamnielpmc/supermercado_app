@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Selectos - Historial de Compras</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <img src="/static/productos/pasillo.png" alt="Banner de Selectos" id="banner">
+        <img src="/static/productos/selectoslogo.png" alt="Logo de Selectos" id="logo">
+        <h1 id="title">Historial de Compras</h1>
+        <a href="/" id="headerBtn">Volver</a>
+    </header>
+    <section id="historial">
+        <ul>
+            {% for venta in ventas %}
+                <div class ="separate">
+                    <strong>Fecha:</strong> {{ venta['fecha'] }} |
+                    <strong>Total:</strong> ${{ "%.2f" | format(venta['total']) }} <br>
+                    <strong>Productos:</strong>
+                    <ul>
+                        {% for item in venta['detalles'] %}
+                            <li>{{ item['nombre'] }} x{{ item['cantidad'] }} - ${{ "%.2f" | format(item['precio']) }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
