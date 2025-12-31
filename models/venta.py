@@ -7,6 +7,7 @@ def registrar_venta(detalles, total):
     cursor = conn.cursor()
     fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     detalles_json = json.dumps(detalles)
+    
     cursor.execute("INSERT INTO ventas (total, fecha, detalles) VALUES (%s, %s, %s)",
         (total, fecha, detalles_json)
     )

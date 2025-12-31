@@ -12,10 +12,19 @@ def index():
 @app.route('/procesar_venta', methods=['POST'])
 def procesar_venta():
     data = request.get_json()
+    if not data:
+        return jsonify({'mensaje': 'Datos inválidos'}), 400
+
     detalles = data.get('detalles', [])
     total = data.get('total', 0)
-    registrar_venta(detalles, total)
-    return jsonify({'mensaje': 'Venta registrada con éxito'})
+
+    try:
+        registrar_venta(detalles, total)
+        return jsonify({'mensaje': 'Venta registrada con éxito'}), 200
+    except Exception as e:
+        print("Error al registrar la venta:", e)  # Esto mostrará el error real en terminal
+        return jsonify({'mensaje': 'Error al registrar la venta', 'error': str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)
