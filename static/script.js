@@ -92,26 +92,33 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const total = parseFloat(totalEl.textContent);
-
         const venta = {
             detalles: carrito,
-            total: total
+            total: parseFloat(totalEl.textContent)
         };
 
-        const res = await fetch("/procesar_venta", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(venta)
-        });
+        console.log("Procesando venta:", venta);
 
-        if (res.ok) {
-            alert("✅ Compra procesada correctamente!");
-            carrito.length = 0;
-            actualizarCarrito();
-        } else {
-            alert("❌ Error al procesar la compra.");
+        try {
+            const res = await fetch("/procesar_venta", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(venta)
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("Compra procesada correctamente!");
+                carrito.length = 0;
+                actualizarCarrito();
+            } else {
+                alert("Error al procesar la compra.");
         }
+    } catch (e) {
+        console.error("Error al conectar a Flask:", e);
+        alert("Error al conectar al servidor.");
+    }
     });
 });
 

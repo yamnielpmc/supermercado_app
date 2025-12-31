@@ -12,6 +12,7 @@ def index():
 @app.route('/procesar_venta', methods=['POST'])
 def procesar_venta():
     data = request.get_json()
+    print("Datos recibidos para la venta:", data)  # Depuración básica
     if not data:
         return jsonify({'mensaje': 'Datos inválidos'}), 400
 
