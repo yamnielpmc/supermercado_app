@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const carrito = [];
     const impuestoRate = 0.10;
 
+    const cashierName = document.getElementById("cashier-id");
     const listaCarrito = document.getElementById("lista-carrito");
     const subtotalEl = document.getElementById("subtotal");
     const impuestoEl = document.getElementById("impuesto");

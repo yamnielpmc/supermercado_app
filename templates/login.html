@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selectos - Login de Cajero</title>
+    <link rel="icon" href="/static/productos/selectosfavicon.png">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <!--Encabezado del Selectos-->
+    <header>
+        <img src="/static/productos/pasillo.png" alt="Banner de Selectos" id="banner">
+        <img src="/static/productos/selectoslogo.png" alt="Logo de Selectos" id="logo">
+    </header>
+    </body>
+        <section id="login-container">
+        <h2 id="iniciarSession">Inicio de Sesión</h2>
+        <div class="loginInfo">
+            <form method="POST">
+                <label>Últimos 4 del SSN:</label>
+                <input type="text" name="ssn" maxlength="4" required>
+                <button type="submit">Ingresar</button>
+        </form>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+        </div>
+    </section>
+</body>
+</html>

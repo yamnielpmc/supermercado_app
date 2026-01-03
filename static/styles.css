@@ -13,6 +13,36 @@ header {
     padding: 1rem;
 }
 
+#iniciarSession {
+    text-align: center;
+    color: #c21313;;
+    padding: 0.3rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.loginInfo {
+    text-align: center;
+    color: #2a9d8f;
+    padding: 0.3rem;
+    font-weight: bold;
+}
+
+.loginInfo button{
+    margin-left: 10px;
+    background-color: #c21313;;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 2px 6px;
+}
+
+.loginInfo button:hover {
+    background-color: #a31b1b;
+}
+
 #title {
     text-align: center;
     color: #c21313;
@@ -61,7 +91,7 @@ main {
     width: 45%;
 }
 
-#historial {
+#historial, #login-container {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -100,6 +130,10 @@ main {
     gap: 10px;
 }
 
+.producto_grid {
+    max-height: 70vh;
+    overflow-y: auto;
+}
 .producto {
     padding: 1rem;
     background-color: #ff0000;

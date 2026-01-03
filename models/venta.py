@@ -1,23 +1,26 @@
 import sqlite3
 import json
 
-DB_PATH = "database/supermercado.db"
+DB_PATH = "database/supermercado.db"    # Ruta a la base de datos SQLite
 
+# Función para conectar a la base de datos
 def get_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row  # Para acceder a columnas por nombre
     return conn
 
+# Función para obtener el historial de ventas
 def obtener_historial():
-    conn = get_connection()  # ✅ Crear la conexión aquí
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM ventas ORDER BY fecha DESC")
     ventas = cursor.fetchall()
     conn.close()
     return ventas
 
+# Función para registrar una nueva venta
 def registrar_venta(detalles, total):
-    conn = get_connection()  # ✅ Crear la conexión aquí
+    conn = get_connection()
     cursor = conn.cursor()
     # Guardar detalles como JSON
     detalles_json = json.dumps(detalles)

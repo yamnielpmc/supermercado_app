@@ -1,14 +1,25 @@
-from flask import Flask, render_template, jsonify, request # type: ignore
+from flask import Flask, render_template, jsonify, request, redirect, url_for, session # type: ignore
 from models.producto import obtener_productos
 from models.venta import registrar_venta, obtener_historial
+from models.cajero import verificar_cajero
 import json
 
+# Crear la aplicación Flask
 app = Flask(__name__)
+
+app.secret_key = "aqui_llego_tu_tiburon"
+
+# Configuración de la clave secreta para sesiones
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'static']
+    if 'cajero' not in session and request.endpoint not in allowed_routes:
+        return redirect(url_for('login'))
 
 @app.route('/')
 # Página principal que muestra los productos
 def index():
-    productos = obtener_productos()
+    productos = obtener_productos() # Obtener la lista de productos desde models
     return render_template('index.html', productos=productos)
 
 @app.route('/procesar_venta', methods=['POST'])
@@ -41,6 +52,29 @@ def historial():
         venta_dict['detalles'] = json.loads(venta_dict['detalles'])
         ventas_list.append(venta_dict)
     return render_template('historial.html', ventas=ventas_list)
+
+# Endpoint para la página de login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        ssn = request.form['ssn']
+        cajero = verificar_cajero(ssn)
+        if cajero:
+            # convertir Row a dict
+            cajero_dict = dict(cajero)
+            session['cajero'] = {
+                'ssn': cajero_dict['ssn'],
+                'nombre': cajero_dict['nombre']
+            }
+            return redirect(url_for('index'))
+        else:
+            return render_template('login.html', error="Credenciales incorrectas")
+    return render_template('login.html')
+
+# Endpoint para cerrar sesión
+def logout():
+    session.pop('cajero', None)
+    return redirect(url_for('login'))
 
 # Ejecutar la aplicación Flask
 if __name__ == '__main__':

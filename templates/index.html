@@ -12,7 +12,8 @@
     <header>
         <img src="/static/productos/pasillo.png" alt="Banner de Selectos" id="banner">
         <img src="/static/productos/selectoslogo.png" alt="Logo de Selectos" id="logo">
-        <h3 id="cashier-id">Cajero: </h3>
+        <h3 id="cashier-id">Cajero: {{ session['cajero']['nombre'] }}</h3>
+        <a href="/login" id="headerBtn">Login</a>
         <a href="/historial" id="headerBtn">Historial</a>
     </header>
     <!--Contenido principal-->
