@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session # type: ignore
 from models.producto import obtener_productos
-from models.venta import registrar_venta, obtener_historial
+from models.venta import registrar_venta, obtener_historial, obtener_venta_por_id
 from models.cajero import verificar_cajero
 import json
 
@@ -71,6 +71,25 @@ def login():
             return render_template('login.html', error="Credenciales incorrectas")
     return render_template('login.html')
 
+# Endpoint para la pagina de recibo
+@app.route('/recibo/<int:venta_id>')
+def recibo(venta_id):
+    if 'cajero' not in session:
+        return redirect(url_for('login')) # Asegurar que el cajero esté logueado
+    
+    venta = obtener_venta_por_id(venta_id)
+    if not venta:
+        return "Venta no encontrada", 404
+    
+    venta_dict = dict(venta)
+    venta_dict['detalles'] = json.loads(venta_dict['detalles'])
+
+    # Calcular totales
+    subtotal = sum(item['precio'] * item['cantidad'] for item in venta_dict['detalles'])
+    impuesto = subtotal * 0.10
+
+    return render_template('recibo.html', venta=venta_dict, subtotal=subtotal,impuesto=impuesto)
+                        
 # Endpoint para cerrar sesión
 def logout():
     session.pop('cajero', None)

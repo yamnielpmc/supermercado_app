@@ -1,0 +1,16 @@
+body {
+    text-align: center;
+    font-family: sans-serif;
+    background-color: hsl(0, 0%, 100%);
+    margin: 0;
+    padding: 0;
+}
+
+.recibo-top {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.recibo-info {
+    gap: 10px;
+}

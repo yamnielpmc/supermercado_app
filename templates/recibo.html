@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recibo #{{ venta['id'] }}</title>
+    <link rel="stylesheet" href="/static/recibo.css">
+</head>
+<body>
+    <div class="recibo-top">
+        <p>Selectos Mr.Cash</p>
+        <P>#180 Carr. 155</P>
+        <p> Tel (787)862-4410 Fax 787-862-4464</p>
+        <p>2026</p>
+        <hr>
+    </div>
+    <section class="recibo-body">
+        <li>
+            {% for item in venta['detalles'] %}
+                    <li>{{ item['nombre'] }} x{{ item['cantidad'] }} - ${{ item['precio'] }}</li>
+            {% endfor %}
+        </li>
+        <div class="recibo-info">
+            <br>
+            <p><strong>Subtotal: ${{ "%.2f"|format(subtotal) }}</strong></p>
+            <p><strong>Impuesto: ${{ "%.2f"|format(impuesto) }}</strong></p>
+            <p><strong>Total: ${{ "%.2f"|format(venta['total']) }}</strong></p>
+            <br>
+            <p><strong>Total de Articulos: {{ venta['detalles']|length }}</strong></p>
+            <hr>
+        </div>
+        <div class="recibo-cajero">
+            <p>{{ venta['fecha'] }}</p>
+            <p>Cajero: {{ session['cajero']['nombre'] }}</p>
+            <br>
+        </div>
+
+        <div class="warning">
+            <b>NO SOMO RESPONSABLES POR MERCANCIA 
+                DEJADA EN CARRITOS O AREA DE EMPAQUE.
+                TIENE 48 HRS PARA CAMBIO CON RECIBO
+            </b>
+        </div>
+    </section>
+    <script src="/static/script.js"></script>
+</html>
