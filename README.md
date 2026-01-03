@@ -9,11 +9,13 @@ El objetivo es simular el sistema de cajas de un supermercado, inspirado en los 
 ## Descripción general
 
 El sistema permite:
+- Hacer Login de un cajero
 - Mostrar productos organizados por categorías.
 - Añadir productos al carrito de compras.
 - Calcular automáticamente subtotal, impuesto (10%) y total.
 - Procesar las compras y registrar las ventas en la base de datos.
 - Vaciar el carrito completo con confirmación ("Void Total").
+- Ver el historial de compras del cajero
 
 ---
 
