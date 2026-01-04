@@ -31,6 +31,7 @@ def registrar_venta(detalles, total):
     conn.commit()
     conn.close()
 
+# Funcion para buscar la venta por su ID
 def obtener_venta_por_id(venta_id):
     conn = get_connection()
     cursor = conn.cursor()

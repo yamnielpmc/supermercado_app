@@ -9,6 +9,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalEl = document.getElementById("total");
     const procesarBtn = document.getElementById("procesar");
 
+    const modal = document.createElement("div");
+    modal.classList.add("modal");
+    modal.innerHTML = '<div class="modal-content"><h3>Verificacion de Edad Requirida</h3><p>Ingrese la fecha de nacimiento</p><input type="date" id="fecha-nacimiento"><div class="modal-buttons"><button id="verificar-edad">ENTER</button><button id="cancelar-edad">CANCELAR</button></div></div>';
+
+    document.body.appendChild(modal);
+    modal.style.display = "none";
+
+    document.getElementById("verificar-edad").addEventListener("click", () => {
+    const fecha = document.getElementById("fecha-nacimiento").value;
+    if (!fecha) {
+        alert("Por favor, ingresa una fecha valida!");
+        return;
+    }
+
+    const edad = calcularEdad(fecha);
+    if(edad >= 18) {
+        carrito.push(productoPendiente);
+        productoPendiente = null;
+        modal.style.display = "none";
+        document.getElementById("fecha-nacimiento").value = "";
+        actualizarCarrito();
+    }else{
+        alert("El cliente es menor de edad. No se le puede vender el producto.")
+        modal.style.display = "none";
+    }
+});
+
+    document.getElementById("cancelar-edad").addEventListener("click", () => {
+        modal.style.display = "none";
+        productoPendiente = null;
+        document.getElementById("fecha-nacimiento").value = "";
+    });
+
+    let productoPendiente = null;
+
     // Agregar producto al carrito
     document.querySelectorAll(".producto").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -16,7 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const id = btn.dataset.id;
             const nombre = btn.dataset.nombre;
             const precio = parseFloat(btn.dataset.precio);
+            const categoria = btn.dataset.categoria.toLowerCase();
 
+            if(categoria === "alcohol" || categoria === "tabaco" || categoria === "alcohol x mayor"){
+                productoPendiente = {id, nombre, precio, cantidad: 1};
+                modal.style.display = "flex";
+                return;
+            }
             // Verificar si el producto ya está en el carrito
             const existente = carrito.find(p => p.id === id);
             if (existente) {
@@ -73,6 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 }
 
+    // Pedir Fecha de Nacimiento
+    function fechaNacimiento() {
+
+    }
     // Botón "VOID TOTAL"
     const voidTotalBtn = document.getElementById("void-total");
     voidTotalBtn.addEventListener("click", () => {
@@ -132,34 +177,46 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Tabs de categorías
-const tabs = document.querySelectorAll(".tab");
-const productosBtns = document.querySelectorAll(".producto");
+    // Tabs de categorías
+    const tabs = document.querySelectorAll(".tab");
+    const productosBtns = document.querySelectorAll(".producto");
 
-tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-        const categoriaSeleccionada = tab.dataset.categoria;
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            const categoriaSeleccionada = tab.dataset.categoria;
 
-        // Activar la pestaña seleccionada
-        tabs.forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
+            // Activar la pestaña seleccionada
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
 
-        // Mostrar solo los productos de esa categoría
-        productosBtns.forEach(btn => {
-            if (btn.dataset.categoria === categoriaSeleccionada) {
-                btn.style.display = "block";
-            } else {
-                btn.style.display = "none";
-            }
+            // Mostrar solo los productos de esa categoría
+            productosBtns.forEach(btn => {
+                if (btn.dataset.categoria === categoriaSeleccionada) {
+                    btn.style.display = "block";
+                } else {
+                    btn.style.display = "none";
+                }
+            });
         });
     });
-});
 
-// Activar la primera pestaña al cargar
-if (tabs.length > 0) {
-    tabs[0].classList.add("active");
-    const primeraCategoria = tabs[0].dataset.categoria;
-    productosBtns.forEach(btn => {
-        btn.style.display = (btn.dataset.categoria === primeraCategoria) ? "block" : "none";
-    });
-}
+    // Activar la primera pestaña al cargar
+    if (tabs.length > 0) {
+        tabs[0].classList.add("active");
+        const primeraCategoria = tabs[0].dataset.categoria;
+        productosBtns.forEach(btn => {
+            btn.style.display = (btn.dataset.categoria === primeraCategoria) ? "block" : "none";
+        });
+    }
+
+    function calcularEdad(fechaNacimiento){
+        const hoy = new Date();
+        const nacimiento = new Date(fechaNacimiento);
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mes = hoy.getMonth() - nacimiento.getMonth();
+
+        if(mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--;
+        }
+        return edad;
+    }

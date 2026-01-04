@@ -277,3 +277,46 @@ li strong {
 .reciboBtn:hover {
     background-color: #21867a;
 }
+
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 50%; height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.modal-content{
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.0.3)
+}
+
+.modal-buttons {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-buttons button{
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}
+
+#verificar-edad {
+    background-color: green;
+}
+
+#cancelar-edad{
+    background-color: #ff0000;
+}
