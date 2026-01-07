@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selectos - Sistema de Cajas</title>
-    <favicon href="/static/productos/selectosfavicon.png">
+    <link rel="icon" href="/static/productos/selectosfavicon.png">
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
@@ -17,6 +17,12 @@
         <a href="/historial" id="headerBtn">Historial</a>
     </header>
     <!--Contenido principal-->
+    <section id="buscar">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="ingresa el nombre o id...">
+        </div>
+    <button id="buscar-producto">Buscar Producto</button>
+    </section>
     <main>
     <section id="productos">
         <h2>Productos</h2>
@@ -54,7 +60,9 @@
         </div>
         <button id="procesar">Procesar Compra</button>
     </section>
-    <button id="void-total" class="peligro">VOID TOTAL</button>
+    <div class="side-buttons">
+        <button id="void-total" class="peligro">VOID TOTAL</button>
+    </div>
 </main>
 
 

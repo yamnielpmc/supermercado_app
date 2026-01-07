@@ -1,64 +1,92 @@
 document.addEventListener("DOMContentLoaded", () => {
     const carrito = [];
     const impuestoRate = 0.10;
+    let productoPendiente = null;
+    let modalAbierto = false;
+    let verificado = false; // Persistente hasta que se finalice la compra o se vacíe el carrito
 
-    const cashierName = document.getElementById("cashier-id");
+    // Elementos del DOM
     const listaCarrito = document.getElementById("lista-carrito");
     const subtotalEl = document.getElementById("subtotal");
     const impuestoEl = document.getElementById("impuesto");
     const totalEl = document.getElementById("total");
     const procesarBtn = document.getElementById("procesar");
+    const voidTotalBtn = document.getElementById("void-total");
 
+    // Crear modal dinámicamente
     const modal = document.createElement("div");
     modal.classList.add("modal");
-    modal.innerHTML = '<div class="modal-content"><h3>Verificacion de Edad Requirida</h3><p>Ingrese la fecha de nacimiento</p><input type="date" id="fecha-nacimiento"><div class="modal-buttons"><button id="verificar-edad">ENTER</button><button id="cancelar-edad">CANCELAR</button></div></div>';
-
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h3>Verificación de Edad Requerida</h3>
+            <p>Ingrese la fecha de nacimiento</p>
+            <input type="date" id="fecha-nacimiento">
+            <div class="modal-buttons">
+                <button id="verificar-edad">ENTER</button>
+                <button id="cancelar-edad">CANCELAR</button>
+            </div>
+        </div>`;
     document.body.appendChild(modal);
     modal.style.display = "none";
 
-    document.getElementById("verificar-edad").addEventListener("click", () => {
-    const fecha = document.getElementById("fecha-nacimiento").value;
-    if (!fecha) {
-        alert("Por favor, ingresa una fecha valida!");
-        return;
+    const verificarBtn = modal.querySelector("#verificar-edad");
+    const cancelarBtn = modal.querySelector("#cancelar-edad");
+
+    // Mostrar modal de verificación de edad
+    function pedirFechaNacimiento(producto) {
+        if (modalAbierto) return;
+        productoPendiente = producto;
+        modal.style.display = "flex";
+        modalAbierto = true;
     }
 
-    const edad = calcularEdad(fecha);
-    if(edad >= 18) {
-        carrito.push(productoPendiente);
-        productoPendiente = null;
-        modal.style.display = "none";
-        document.getElementById("fecha-nacimiento").value = "";
-        actualizarCarrito();
-    }else{
-        alert("El cliente es menor de edad. No se le puede vender el producto.")
-        modal.style.display = "none";
-    }
-});
+    // Verificar edad al hacer clic en ENTER
+    verificarBtn.addEventListener("click", () => {
+        const fecha = document.getElementById("fecha-nacimiento").value;
+        if (!fecha) {
+            alert("Por favor, ingresa una fecha válida.");
+            return;
+        }
 
-    document.getElementById("cancelar-edad").addEventListener("click", () => {
+        const edad = calcularEdad(fecha);
+        if (edad >= 18) {
+            carrito.push(productoPendiente);
+            actualizarCarrito();
+            productoPendiente = null;
+            verificado = true; // Mantiene la verificación activa durante la sesión de compra
+        } else {
+            alert("El cliente es menor de edad. No se puede vender el producto.");
+            productoPendiente = null;
+        }
+
         modal.style.display = "none";
-        productoPendiente = null;
         document.getElementById("fecha-nacimiento").value = "";
+        modalAbierto = false;
     });
 
-    let productoPendiente = null;
+    // Cerrar modal al cancelar
+    cancelarBtn.addEventListener("click", () => {
+        productoPendiente = null;
+        modal.style.display = "none";
+        document.getElementById("fecha-nacimiento").value = "";
+        modalAbierto = false;
+    });
 
     // Agregar producto al carrito
     document.querySelectorAll(".producto").forEach(btn => {
         btn.addEventListener("click", () => {
-            // Obtener datos del producto desde la base de datos
             const id = btn.dataset.id;
             const nombre = btn.dataset.nombre;
             const precio = parseFloat(btn.dataset.precio);
-            const categoria = btn.dataset.categoria.toLowerCase();
+            const alcohol = parseInt(btn.dataset.es_alcohol);
 
-            if(categoria === "alcohol" || categoria === "tabaco" || categoria === "alcohol x mayor"){
-                productoPendiente = {id, nombre, precio, cantidad: 1};
-                modal.style.display = "flex";
+            // Si es producto con alcohol, verificar solo si no ha sido verificado ya
+            if (alcohol != 0 && !verificado) {
+                pedirFechaNacimiento({ id, nombre, precio, cantidad: 1 });
                 return;
             }
-            // Verificar si el producto ya está en el carrito
+
+            // Si ya fue verificado o no es alcohol, agregar directamente
             const existente = carrito.find(p => p.id === id);
             if (existente) {
                 existente.cantidad++;
@@ -69,72 +97,58 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Actualizar la lista del carrito y totales
+    // Actualizar lista del carrito
     function actualizarCarrito() {
-    // Limpiar la lista actual
-    listaCarrito.innerHTML = "";
-    let subtotal = 0;
+        listaCarrito.innerHTML = "";
+        let subtotal = 0;
 
-    // Mostrar cada producto en el carrito
-    carrito.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`;
+        carrito.forEach(item => {
+            const li = document.createElement("li");
+            li.textContent = `${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`;
 
-        // Crear botón "Void"
-        const voidBtn = document.createElement("button");
-        voidBtn.textContent = "VOID";
-        voidBtn.classList.add("eliminar");
-        voidBtn.addEventListener("click", () => {
-            eliminarDelCarrito(item.nombre);
+            const voidBtn = document.createElement("button");
+            voidBtn.textContent = "VOID";
+            voidBtn.classList.add("eliminar");
+            voidBtn.addEventListener("click", () => eliminarDelCarrito(item.nombre));
+
+            li.appendChild(voidBtn);
+            listaCarrito.appendChild(li);
+
+            subtotal += item.precio * item.cantidad;
         });
 
-        // Agregar botón al elemento de la lista
-        li.appendChild(voidBtn);
-        listaCarrito.appendChild(li);
+        const impuesto = subtotal * impuestoRate;
+        const total = subtotal + impuesto;
 
-        subtotal += item.precio * item.cantidad;
-    });
-
-    // Calcular totales
-    const impuesto = subtotal * impuestoRate;
-    const total = subtotal + impuesto;
-
-    subtotalEl.textContent = subtotal.toFixed(2);
-    impuestoEl.textContent = impuesto.toFixed(2);
-    totalEl.textContent = total.toFixed(2);
-}
-
+        subtotalEl.textContent = subtotal.toFixed(2);
+        impuestoEl.textContent = impuesto.toFixed(2);
+        totalEl.textContent = total.toFixed(2);
+    }
 
     // Eliminar producto del carrito
     function eliminarDelCarrito(nombre) {
-    const index = carrito.findIndex(p => p.nombre === nombre);
-    if (index !== -1) {
-        carrito.splice(index, 1);
-        actualizarCarrito();
+        const index = carrito.findIndex(p => p.nombre === nombre);
+        if (index !== -1) {
+            carrito.splice(index, 1);
+            actualizarCarrito();
+        }
     }
-}
 
-    // Pedir Fecha de Nacimiento
-    function fechaNacimiento() {
-
-    }
-    // Botón "VOID TOTAL"
-    const voidTotalBtn = document.getElementById("void-total");
+    // Vaciar todo el carrito
     voidTotalBtn.addEventListener("click", () => {
-    if (carrito.length === 0) {
-        alert("El carrito ya está vacío.");
-        return;
-    }
-        const confirmar = confirm("¿Estás seguro de que deseas vaciar el carrito?");
-        if (confirmar){
+        if (carrito.length === 0) {
+            alert("El carrito ya está vacío.");
+            return;
+        }
+
+        const confirmar = confirm("¿Deseas vaciar el carrito?");
+        if (confirmar) {
             carrito.length = 0;
             actualizarCarrito();
+            verificado = false; // Se reinicia la verificación al vaciar el carrito
             alert("El carrito ha sido vaciado.");
-        } else {
-            alert("Operacion Cancelada.");
         }
     });
-
 
     // Procesar compra
     procesarBtn.addEventListener("click", async () => {
@@ -143,15 +157,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Preparar datos de la venta
         const venta = {
             detalles: carrito,
             total: parseFloat(totalEl.textContent)
         };
 
-        console.log("Procesando venta:", venta);
-
-        // Enviar datos al servidor Flask
         try {
             const res = await fetch("/procesar_venta", {
                 method: "POST",
@@ -159,25 +169,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify(venta)
             });
 
-            // Obtener respuesta del servidor
             const data = await res.json();
 
-            // Manejar la respuesta
             if (res.ok) {
-                alert("Compra procesada correctamente!");
+                alert("Compra procesada correctamente.");
                 carrito.length = 0;
                 actualizarCarrito();
+                verificado = false; // Se reinicia al finalizar transacción
             } else {
-                alert("Error al procesar la compra.");
+                alert("Error al procesar la compra: " + (data.message || ""));
+            }
+        } catch (e) {
+            console.error("Error al conectar a Flask:", e);
+            alert("Error al conectar al servidor.");
         }
-    } catch (e) {
-        console.error("Error al conectar a Flask:", e);
-        alert("Error al conectar al servidor.");
-    }
     });
-});
 
-    // Tabs de categorías
+    // TABS DE CATEGORÍAS
     const tabs = document.querySelectorAll(".tab");
     const productosBtns = document.querySelectorAll(".producto");
 
@@ -185,22 +193,18 @@ document.addEventListener("DOMContentLoaded", () => {
         tab.addEventListener("click", () => {
             const categoriaSeleccionada = tab.dataset.categoria;
 
-            // Activar la pestaña seleccionada
+            // Quitar clase activa de todas las pestañas
             tabs.forEach(t => t.classList.remove("active"));
             tab.classList.add("active");
 
-            // Mostrar solo los productos de esa categoría
+            // Mostrar solo productos de la categoría seleccionada
             productosBtns.forEach(btn => {
-                if (btn.dataset.categoria === categoriaSeleccionada) {
-                    btn.style.display = "block";
-                } else {
-                    btn.style.display = "none";
-                }
+                btn.style.display = (btn.dataset.categoria === categoriaSeleccionada) ? "block" : "none";
             });
         });
     });
 
-    // Activar la primera pestaña al cargar
+    // Activar automáticamente la primera pestaña al cargar
     if (tabs.length > 0) {
         tabs[0].classList.add("active");
         const primeraCategoria = tabs[0].dataset.categoria;
@@ -209,14 +213,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function calcularEdad(fechaNacimiento){
+    // Calcular edad
+    function calcularEdad(fechaNacimiento) {
         const hoy = new Date();
         const nacimiento = new Date(fechaNacimiento);
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mes = hoy.getMonth() - nacimiento.getMonth();
-
-        if(mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--;
-        }
+        if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) edad--;
         return edad;
     }
+});

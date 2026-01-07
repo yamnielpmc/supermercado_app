@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session # type: ignore
 from models.producto import obtener_productos
-from models.venta import registrar_venta, obtener_historial, obtener_venta_por_id
+from models.venta import registrar_venta, obtener_historial, obtener_venta_por_id, get_producto_by_id, get_producto_by_name
 from models.cajero import verificar_cajero
 import json
 
@@ -94,6 +94,22 @@ def recibo(venta_id):
 def logout():
     session.pop('cajero', None)
     return redirect(url_for('login'))
+
+@app.route('/buscar', methods=['GET'])
+def buscar_producto():
+    prod_id = request.args.get('id')
+    prod_name = request.args.get('name')
+    producto = None
+    if prod_id:
+        producto = get_producto_by_id(prod_id)
+        if producto:
+            producto = dict(producto)
+    elif prod_name:
+        producto = get_producto_by_name(prod_name)
+        if producto:
+            producto = dict(producto)
+    return render_template('buscar.html', producto=producto, id_busqueda=prod_id, name_busqueda=prod_name)
+
 
 # Ejecutar la aplicación Flask
 if __name__ == '__main__':
