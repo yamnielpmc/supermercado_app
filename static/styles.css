@@ -13,6 +13,10 @@ header {
     padding: 1rem;
 }
 
+h1{
+    color:#ff0000;
+}
+
 #iniciarSession {
     text-align: center;
     color: #c21313;;
@@ -60,7 +64,7 @@ header {
     font-weight: bold;
 }
 
-header #headerBtn:hover {
+#headerBtn:hover {
     background-color: #f46161;
 }
 
@@ -99,7 +103,7 @@ main {
     border-radius: 20px;
 }
 
-input{
+#searchInput{
     width: 100%;
     height: 100%;
     padding: 5px 20px;
@@ -107,7 +111,7 @@ input{
     border: none;
 }
 
-input::placeholder{
+searchInput::placeholder{
     font-size: 15px;
 }
 
@@ -183,6 +187,10 @@ input::placeholder{
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+}
+
+#ssn {
+    justify-content: center;
 }
 
 .producto:hover {
@@ -344,17 +352,15 @@ li strong {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0,0,0,0.5);
-    z-index: 1000;
 }
 
 .modal-content{
     background-color: #fff;
     padding: 20px;
+    border: #7c000a;
     border-radius: 10px;
     text-align: center;
     width: 300px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.0.3)
 }
 
 .modal-buttons {
@@ -378,4 +384,40 @@ li strong {
 
 #cancelar-edad{
     background-color: #ff0000;
+}
+
+.settings-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin-top: 10px;
+    gap: 10px;
+    padding: 1rem 10px;
+}
+
+#settingBtn {
+    text-wrap: inherit;
+    top: 20px;
+    right: 20px;
+    background-color: #ff0000;
+    color: white;
+    padding: 2rem 1rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+#settingBtn:hover {
+    background-color: #f46161;
+}
+
+#setting-return {
+    text-wrap: inherit;
+    background-color: #063ffa;
+    color: white;
+    padding: 2rem 1rem;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
 }

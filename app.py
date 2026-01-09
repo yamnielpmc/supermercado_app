@@ -40,7 +40,10 @@ def procesar_venta():
     except Exception as e:
         print("Error al registrar la venta:", e)  # Esto mostrará el error real en terminal
         return jsonify({'mensaje': 'Error al registrar la venta', 'error': str(e)}), 500
-
+# Endpoint para entrar a los ajustes
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
 # Endpoint para ver el historial de ventas
 @app.route('/historial')
 def historial():

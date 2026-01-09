@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
             carrito.push(productoPendiente);
             actualizarCarrito();
             productoPendiente = null;
-            verificado = true; // Mantiene la verificación activa durante la sesión de compra
+            verificado = true; // Mantiene la verificación activa durante la sesión
         } else {
             alert("El cliente es menor de edad. No se puede vender el producto.");
             productoPendiente = null;
@@ -78,10 +78,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const id = btn.dataset.id;
             const nombre = btn.dataset.nombre;
             const precio = parseFloat(btn.dataset.precio);
-            const alcohol = parseInt(btn.dataset.es_alcohol);
 
-            // Si es producto con alcohol, verificar solo si no ha sido verificado ya
-            if (alcohol != 0 && !verificado) {
+            // Convertir a número de forma segura (NaN → 0)
+            const alcohol = Number(btn.dataset.es_alcohol) || 0;
+
+            // Si es producto con alcohol (1) y no se ha verificado aún
+            if (alcohol === 1 && !verificado) {
                 pedirFechaNacimiento({ id, nombre, precio, cantidad: 1 });
                 return;
             }
